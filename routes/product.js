@@ -3,7 +3,7 @@ import { getProducts, getProduct, createProduct, addToCart, payOrder, removeProd
 
 const router = express.Router()
 
-router.get('/api/products', (req, res) => {
+router.get('/', (req, res) => {
     getProducts().then(data => {
         if (data.length > 0) {
             res.status(200).json(data)
@@ -16,7 +16,7 @@ router.get('/api/products', (req, res) => {
     })
 });
 
-router.get('/api/products/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const id = req.params.id
     getProduct(id).then(data => {
         if (data) {
@@ -30,48 +30,25 @@ router.get('/api/products/:id', (req, res) => {
     })
 });
 
-router.post('/api/products', (req, res) => {
-    const product = req.body
-    createProduct(product).then(data => {
-        res.status(201).json(data)
-    }).catch(err => {
-        console.log(err)
-        res.status(500).json({ response: 'internal server error' })
-    })
+router.post('/', (req, res) => {
+    const { title, desc, img, tag, price } = req.body
+    createProduct(title, desc, img, tag, price)
+    res.status(200).json({ response: 'product have been added to db' })
 });
 
-router.post('/api/cart', (req, res) => {
-    const { productId, quantity } = req.body
-    addToCart(productId, quantity).then(data => {
-        res.status(201).json(data)
-    }).catch(err => {
-        console.log(err)
-        res.status(500).json({ response: 'internal server error' })
-    })
+router.post('/cart', (req, res) => {
+    addToCart(req.body)
+    res.status(200).json({ response: 'Articles have been correctly added to your order' });
 });
 
-router.post('/api/orders', (req, res) => {
-    const { cartId, paymentMethod } = req.body
-    payOrder(cartId, paymentMethod).then(data => {
-        res.status(201).json(data)
-    }).catch(err => {
-        console.log(err)
-        res.status(500).json({ response: 'internal server error' })
-    })
+router.post('/:id/pay', (req, res) => {
+    payOrder(req.params.id);
+    res.status(200).json({ response: 'order have been paid, thank you!' });
 });
 
-router.delete('/api/products/:id', (req, res) => {
-    const id = req.params.id
-    removeProduct(id).then(data => {
-        if (data) {
-            res.status(200).json({ response: `product with id ${id} deleted` })
-        } else {
-            res.status(400).json({ response: `could not find product with id ${id}` })
-        }
-    }).catch(err => {
-        console.log(err)
-        res.status(500).json({ response: 'internal server error' })
-    })
+router.delete('/:id', (req, res) => {
+    removeProduct(req.params.id);
+    res.status(200).json({ response: 'product have been removed from db' });
 });
 
 export default router;

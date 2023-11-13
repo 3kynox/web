@@ -14,6 +14,9 @@ app.use((req, res, next) => {
 })
 
 app.use('/api/products', productRoute)
+app.use((req, res) => {
+    res.status(404).json({ message: `API not found at ${req.url}` });
+});
 
 app.listen(8080, () => {
     console.log('Server started on port 8080')
