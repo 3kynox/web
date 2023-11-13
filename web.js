@@ -49,8 +49,8 @@ app.delete('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/cart', (req, res) => {
-    addToCart(req.body);
-    res.status(200).json({ response: 'products have been correctly added to your order' });
+    addToCart(req.body)
+    res.status(200).json({ response: 'Articles have been correctly added to your order' });
 });
 
 app.post('/api/orders/:id/pay', (req, res) => {
