@@ -54,30 +54,24 @@ const getProduct = (id) => {
         });
 };
 
-function createProduct(title, desc, img, tag, price) {
-    return new Promise((resolve, reject) => {
-        readProducts().then(data => {
-            const newProduct = {
-                id: Math.floor(Math.random() * 100000).toString(),
-                title,
-                desc,
-                img,
-                tag,
-                price
-            };
+const createProduct = (title, desc, img, tag, price) => {
+    const id = Math.floor((1 + Math.random()) * 0x10000).toString().substring(1)
 
-            data.push(newProduct);
-            
-            writeProducts(data).then(() => {
-                resolve();
-            }).catch(err => {
-                reject(err);
-            });
-        }).catch(err => {
-            reject(err);
-        });
-    });
+    const newProduct = {
+        id,
+        title,
+        desc,
+        img,
+        tag,
+        price
+    }
+
+    getProducts().then((data) => {
+        data.push(newProduct)
+        writeProducts(data)
+    })
 }
+
 
 const addToCart = (articles) => {
     const id = Math.floor((1 + Math.random()) * 0x10000).toString().substring(1)
@@ -87,9 +81,9 @@ const addToCart = (articles) => {
         articles
     }
 
-    return getOrders().then((data) => {
+    getOrders().then((data) => {
         data.push(newCart)
-        return writeOrders(data)
+        writeOrders(data)
     })
 }
 
